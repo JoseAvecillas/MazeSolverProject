@@ -16,12 +16,11 @@ public class MazeFrame extends JFrame {
     private JButton viewResultsButton;
     private JLabel statusLabel;
     private JSlider speedSlider; 
-
+    private JButton ayudaButton;
     private JToggleButton startModeButton;
     private JToggleButton endModeButton;
     private JToggleButton wallModeButton;
     private JToggleButton eraseModeButton;
-
     private ButtonGroup editModeGroup;
 
     public MazeFrame(String title) {
@@ -38,14 +37,11 @@ public class MazeFrame extends JFrame {
     private void initComponents() {
         mazePanel = new MazePanel(20, 20); 
 
-        // Asegúrate de que los nombres aquí coincidan con los que pones en MazeController.initializeSolvers()
         String[] algorithms = {
             "MazeSolverBFS",
             "MazeSolverDFS",
             "MazeSolverRecursivo",
             "MazeSolverDFSCompleto"
-            // Si NO quieres usar MazeSolverRecursivoCompletoBT, asegúrate de que no esté aquí:
-            // "MazeSolverRecursivoCompletoBT" 
         };
         algorithmSelector = new JComboBox<>(algorithms);
 
@@ -83,24 +79,56 @@ public class MazeFrame extends JFrame {
         speedSlider.setPaintLabels(true);
         speedSlider.setInverted(true); 
         speedSlider.setBorder(BorderFactory.createTitledBorder("Velocidad (ms de retraso)"));
+
+        ayudaButton = new JButton("Ayuda");
+        JPopupMenu ayudaMenu = new JPopupMenu();
+        JMenuItem acercaDeItem = new JMenuItem("Acerca de");
+
+        ayudaMenu.add(acercaDeItem);
+
+        ayudaButton.addActionListener(e -> {
+            ayudaMenu.show(ayudaButton, 0, ayudaButton.getHeight());
+        });
+
+        acercaDeItem.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this,
+                "👨‍💻 Desarrollador 1:\n" +
+                "Nombre: Mateo Namicela\n" +
+                "Correo: mnamicela@est.ups.edu.ec\n\n" +
+
+                "👩‍💻 Desarrollador 2:\n" +
+                "Nombre: Alexander Beltrán\n" +
+                "Correo: mbeltranc1@est.ups.edu.ec\n\n" +
+
+                "👨‍💻 Desarrollador 3:\n" +
+                "Nombre: Dennis Peñaranda \n" +
+                "Correo: dpenaranda@est.ups.edu.ec\n\n" +
+
+                "👩‍💻 Desarrollador 4:\n" +
+                "Nombre: Jose Avecillas\n" +
+                "Correo: javecillasc1@est.ups.edu.ec\n\n" +
+
+                "📌 Proyecto: Resolución de Laberintos - 2025",
+                "Acerca de",
+                JOptionPane.INFORMATION_MESSAGE);
+        });
     }
 
     private void addComponentsToFrame() {
         JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         controlPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        
+
         controlPanel.add(new JLabel("Filas:"));
         controlPanel.add(numRowsSpinner);
         controlPanel.add(new JLabel("Columnas:")); 
         controlPanel.add(numColsSpinner); 
-        
+
         controlPanel.add(generateMazeButton);
         controlPanel.add(new JLabel("Algoritmo:"));
         controlPanel.add(algorithmSelector);
-        
+
         controlPanel.add(solveMazeButton); 
         controlPanel.add(visualizeStepByStepButton); 
-        
         controlPanel.add(clearResultsButton);
         controlPanel.add(viewResultsButton);
 
@@ -125,7 +153,16 @@ public class MazeFrame extends JFrame {
         JScrollPane scrollPane = new JScrollPane(mazePanel);
         add(scrollPane, BorderLayout.CENTER);
 
-        add(statusLabel, BorderLayout.SOUTH);
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.add(statusLabel, BorderLayout.CENTER);
+
+        JPanel helpPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
+        ayudaButton.setPreferredSize(new Dimension(80, 25));
+        helpPanel.add(ayudaButton);
+
+        bottomPanel.add(helpPanel, BorderLayout.EAST);
+
+        add(bottomPanel, BorderLayout.SOUTH);
     }
 
     public MazePanel getMazePanel() {
@@ -155,7 +192,7 @@ public class MazeFrame extends JFrame {
     public void setSolveMazeButtonListener(ActionListener listener) {
         solveMazeButton.addActionListener(listener);
     }
-    
+
     public void setVisualizeStepByStepButtonListener(ActionListener listener) {
         visualizeStepByStepButton.addActionListener(listener);
     }
@@ -187,7 +224,7 @@ public class MazeFrame extends JFrame {
     public void updateStatus(String message) {
         statusLabel.setText(message);
     }
-    
+
     public void showMessage(String message, String title) {
         JOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE);
     }
